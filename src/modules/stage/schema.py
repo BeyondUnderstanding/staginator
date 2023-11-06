@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RemoteOrgSchema(BaseModel):
@@ -14,12 +14,20 @@ class RemoteBranchSchema(BaseModel):
     name: str
 
 
-class StageSchema(BaseModel):
-    id: int
-    title: str
-    url: str
-    port: int
-    directory: str
-    status: str
-    repo_id: int
 
+class CreateStageModel(BaseModel):
+    org_name: str
+    repo_name: str
+    branch_name: str
+    exposed_port: int
+    env: Optional[List[str]] = Field(default=[])
+
+    enable_tg_notifications: bool
+    enable_webhooks: bool
+    enable_ssl: bool
+    enable_websockets: bool
+    websockets_path: str
+
+
+class DeleteStageModel(BaseModel):
+    id: int

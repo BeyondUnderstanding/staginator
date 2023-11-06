@@ -4,8 +4,8 @@ server {
     listen 80;
     server_name [stage_name].staginator.local;
 
-    access_log [logs_path]/access.log;
-    error_log [logs_path]/errors.log;
+    access_log [logs_path]/[stage_name]_access.log;
+    error_log [logs_path]/[stage_name]_errors.log;
 
     location / {
         proxy_pass http://10.1.0.1:[deploy_port]/;
