@@ -1,5 +1,6 @@
 server {
     allow 10.1.0.0/24;
+    allow 172.17.0.0/24;
     deny all;
     listen 80;
     server_name [stage_name].staginator.local;
