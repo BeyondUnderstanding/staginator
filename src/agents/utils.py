@@ -99,3 +99,6 @@ def restart_nginx():
         stderr=subprocess.PIPE
     )
     return proc
+
+def check_for_errors():
+    exit()

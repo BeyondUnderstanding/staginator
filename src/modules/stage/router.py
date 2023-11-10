@@ -9,7 +9,7 @@ from src.modules.configmanager import ConfigManager
 from models import Staging, AssignedPort, Stage
 from src.db import get_session
 from .github.router import github_repos
-from .schema import CreateStageModel, DeleteStageModel
+from .schema import CreateStageModel, DeleteStageModel, StageModel
 from src.modules.githubmanager import github
 from src.modules.telegrammanager import manager
 
@@ -37,19 +37,22 @@ async def create_stage(data: CreateStageModel, session: Session = Depends(get_se
     git_repo = github.get_organization(data.org_name).get_repo(data.repo_name)
     new_staging.git = git_repo.clone_url
     # current_hooks = git_repo.get_hooks()
-    if data.enable_webhooks:
-        hook = git_repo.create_hook(
-            name='web',
-            config={
-            'content_type': 'json',
-            'insecure_ssl': 1,
-            'url': 'http://staginator.msk.beyondedge.ru/api/webhooks/github'
-        },
-        events=[
-            'push'
-        ],
-        active=True)
-        new_staging.webhook_id = hook.id
+    try:
+        if data.enable_webhooks:
+            hook = git_repo.create_hook(
+                name='web',
+                config={
+                'content_type': 'json',
+                'insecure_ssl': 1,
+                'url': 'http://staginator.msk.beyondedge.ru/api/webhooks/github'
+            },
+            events=[
+                'push'
+            ],
+            active=True)
+            new_staging.webhook_id = hook.id
+    except Exception:
+        pass
     if data.enable_ssl:
         ...
     if data.enable_websockets:
@@ -116,3 +119,7 @@ async def rebuild_stage(id: int, session: Session = Depends(get_session)):
     manager.stage_rebuild_start(staging.stage.title)
     return JSONResponse(status_code=200, content={'message': 'Task created'})
 
+@stage.get('/', response_model=List[StageModel])
+async def get_stages(session: Session = Depends(get_session)):
+    stages = session.scalars(select(Stage))
+    return stages

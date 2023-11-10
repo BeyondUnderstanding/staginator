@@ -1,5 +1,6 @@
 import sys
-from utils import pull, stop_container, delete_container, delete_image, build_image, run_container, restart_nginx
+from utils import pull, stop_container, delete_container, delete_image, build_image, run_container, restart_nginx, \
+    check_for_errors
 import requests
 
 
@@ -20,7 +21,10 @@ requests.post('http://staginator.local/api/status/create_stage', json={
     'branch': branch,
     'status': 'pull'
 })
-pull(cwd).communicate()
+
+pull_task = pull(cwd)
+pull_task.communicate()
+# check_for_errors(pull_task.returncode)
 
 requests.post('http://staginator.local/api/status/create_stage', json={
     'org': org,
@@ -28,7 +32,9 @@ requests.post('http://staginator.local/api/status/create_stage', json={
     'branch': branch,
     'status': 'container_stop'
 })
-stop_container(repo, branch).communicate()
+stop_task = stop_container(repo, branch)
+stop_task.communicate()
+# check_for_errors()
 
 requests.post('http://staginator.local/api/status/create_stage', json={
     'org': org,
