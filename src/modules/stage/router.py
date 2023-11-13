@@ -125,6 +125,10 @@ async def get_stages(session: Session = Depends(get_session)):
     stages = session.scalars(select(Stage))
     return stages
 
+@stage.get('/one', response_model=StageModel)
+async def get_stage(id: int, session: Session = Depends(get_session)):
+    return session.get(Stage, id)
+
 
 @stage.get('/{stage_id}/logs')
 async def get_logs(stage_id: int, session: Session = Depends(get_session)):
