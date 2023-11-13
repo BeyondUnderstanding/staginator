@@ -1,3 +1,4 @@
+import subprocess
 from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy import select, and_
@@ -123,3 +124,13 @@ async def rebuild_stage(id: int, session: Session = Depends(get_session)):
 async def get_stages(session: Session = Depends(get_session)):
     stages = session.scalars(select(Stage))
     return stages
+
+
+@stage.get('/{stage_id}/logs')
+async def get_logs(stage_id: int, session: Session = Depends(get_session)):
+    stage_obj = session.get(Stage, stage_id)
+    proc = subprocess.Popen(f'docker logs {stage_obj.title}', shell=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+    logs = proc.communicate()
+    return {'stdout': logs[0], 'stderr': logs[1]}
