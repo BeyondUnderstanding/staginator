@@ -17,6 +17,7 @@ class RemoteBranchSchema(BaseModel):
 
 
 class StagingModel(BaseModel):
+    id: int
     org_name: str
     repo_name: str
     branch_name: str

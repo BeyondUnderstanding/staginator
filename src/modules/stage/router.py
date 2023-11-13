@@ -97,8 +97,6 @@ async def delete_stage(id: int, session: Session = Depends(get_session)):
             hook.delete()
     except Exception:
         pass
-
-
     manager.stage_delete(staging.stage.title, staging.stage.url)
     session.delete(staging)
     session.commit()
