@@ -46,3 +46,12 @@ class NotificationManager:
             text=payload_text.format(stage, url)
         )
 
+    def stage_build_failed(self, stage, message):
+        payload_text = "<b>Stage build failed -> {0}</b>\n" \
+                       "<b>{1}</b>"
+        self.bot.send_message(
+            chat_id=self.chat_id,
+            message_thread_id=self.thread_id,
+            parse_mode='HTML',
+            text=payload_text.format(stage, message)
+        )

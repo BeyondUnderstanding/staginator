@@ -6,6 +6,8 @@ pyTelegramBotAPI
 python-dotenv~=1.0.0
 pydantic~=2.4.2
 psycopg2-binary
-PyGithub
+PyGithub~=2.1.1
 docker
 Pastebin
+requests~=2.31.0
+starlette~=0.27.0

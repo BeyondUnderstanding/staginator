@@ -1,4 +1,28 @@
 import subprocess
+from typing import BinaryIO
+
+import requests
+
+def post_log(org: str, repo: str, branch: str, message: str):
+    requests.post('http://staginator.local/api/status', json={
+        'org': org,
+        'repo': repo,
+        'branch': branch,
+        'message': message
+    })
+
+def change_status(org: str, repo: str, branch: str, status: str):
+    requests.patch('http://staginator.local/api/status', json={
+        'org': org,
+        'repo': repo,
+        'branch': branch,
+        'status': status
+    })
+
+def write_logger(logger: BinaryIO, thread: tuple[bytes, bytes]):
+    logger.write(thread[0])
+    logger.write(thread[1])
+
 
 def create_dir(cwd: str):
     proc = subprocess.Popen(f'mkdir {cwd}', shell=True,
